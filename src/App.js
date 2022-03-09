@@ -34,7 +34,7 @@ function App() {
           </Route>
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/create-listing' element={<CreateListing />} />
-          <Route path='/edit-listing/:id' element={<EditListing />} />
+          <Route path='/edit-listing/:listingId' element={<EditListing />} />
           <Route path='/contact/:landlordId' element={<Contact />} />
         </Routes>
         <NavBar />

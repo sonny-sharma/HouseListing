@@ -65,7 +65,7 @@ const CreateListing = () => {
   useEffect(() => {
     setLoading(true);
     const fetchListing = async () => {
-      const docRef = doc(db, "listings", params.id);
+      const docRef = doc(db, "listings", params.listingId);
       const docSnap = await getDoc(docRef);
       console.log(docSnap.data());
       if (docSnap.exists()) {
