@@ -1,14 +1,15 @@
-import { getAuth, updateEmail, updateProfile } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
 import {
   collection,
   deleteDoc,
   doc,
   getDocs,
+  orderBy,
   query,
   updateDoc,
   where,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import homeIcon from "../assets/svg/homeIcon.svg";
@@ -20,7 +21,6 @@ function Profile() {
   const auth = getAuth();
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState(null);
-
   const [changeDetails, setChangeDetails] = useState(false);
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
@@ -37,7 +37,8 @@ function Profile() {
 
       const q = query(
         listingsRef,
-        where("userRef", "==", auth.currentUser.uid)
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
       );
 
       const querySnap = await getDocs(q);
@@ -65,20 +66,20 @@ function Profile() {
 
   const onSubmit = async () => {
     try {
-      auth.currentUser.displayName !== name &&
-        (await updateProfile(auth.currentUser, {
+      if (auth.currentUser.displayName !== name) {
+        // Update display name in fb
+        await updateProfile(auth.currentUser, {
           displayName: name,
-        }));
+        });
 
-      auth.currentUser.email !== email &&
-        (await updateEmail(auth.currentUser, email));
-
-      const useRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(useRef, {
-        name,
-        email,
-      });
+        // Update in firestore
+        const userRef = doc(db, "users", auth.currentUser.uid);
+        await updateDoc(userRef, {
+          name,
+        });
+      }
     } catch (error) {
+      console.log(error);
       toast.error("Could not update profile details");
     }
   };

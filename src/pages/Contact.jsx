@@ -7,13 +7,14 @@ import { db } from "../firebase.config";
 const Contact = () => {
   const [message, setMessage] = useState("");
   const [landlord, setLandlord] = useState(null);
+  // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
 
   const params = useParams();
 
   const onChange = (e) => {
     setMessage(e.target.value);
-  }
+  };
 
   useEffect(() => {
     const getLandlord = async () => {
@@ -30,14 +31,14 @@ const Contact = () => {
     getLandlord();
   }, [params.landlordId]);
   return (
-    <div className="pageContainer">
+    <div className='pageContainer'>
       <header>
-        <p className="pageHeader">Contact LandLord</p>
+        <p className='pageHeader'>Contact LandLord</p>
       </header>
       {landlord !== null && (
         <main>
-          <div className="contactLandlord">
-            <p className="landlordName">{landlord?.name}</p>
+          <div className='contactLandlord'>
+            <p className='landlordName'>{landlord?.name}</p>
           </div>
 
           <form className='messageForm'>
@@ -54,8 +55,14 @@ const Contact = () => {
               ></textarea>
             </div>
 
-            <a href={`mailto:${landlord.email}?Subject=${searchParams.get('listingName')}&body=${message}`}>
-              <button type="button" className="primaryButton">Send Message</button>
+            <a
+              href={`mailto:${landlord.email}?Subject=${searchParams.get(
+                "listingName"
+              )}&body=${message}`}
+            >
+              <button type='button' className='primaryButton'>
+                Send Message
+              </button>
             </a>
           </form>
         </main>

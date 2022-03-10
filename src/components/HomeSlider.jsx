@@ -1,51 +1,49 @@
-import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import SwiperCore, { A11y, Navigation, Pagination, Scrollbar } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/swiper-bundle.css'
-import { db } from '../firebase.config'
-import Spinner from './Spinner'
-SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SwiperCore, { A11y, Navigation, Pagination, Scrollbar } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/swiper-bundle.css";
+import { db } from "../firebase.config";
+import Spinner from "./Spinner";
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y]);
 
 function HomeSlider() {
-  const [loading, setLoading] = useState(true)
-  const [listings, setListings] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const [listings, setListings] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchListings = async () => {
-      const listingsRef = collection(db, 'listings')
-      const q = query(listingsRef, orderBy('timestamp', 'desc'), limit(5))
-      const querySnap = await getDocs(q)
+      const listingsRef = collection(db, "listings");
+      const q = query(listingsRef, orderBy("timestamp", "desc"), limit(5));
+      const querySnap = await getDocs(q);
 
-      let listings = []
+      let listings = [];
 
       querySnap.forEach((doc) => {
         return listings.push({
           id: doc.id,
           data: doc.data(),
-        })
-      })
+        });
+      });
 
       // console.log(listings);
-      setListings(listings)
-      setLoading(false)
-    }
+      setListings(listings);
+      setLoading(false);
+    };
 
-    fetchListings()
-  }, [])
+    fetchListings();
+  }, []);
 
   if (loading) {
-    return <Spinner />
+    return <Spinner />;
   }
 
   if (listings.length === 0) {
     return <></>;
   }
-
-
 
   return (
     listings && (
@@ -68,7 +66,7 @@ function HomeSlider() {
                 <p className='swiperSlideText'>{data.name}</p>
                 <p className='swiperSlidePrice'>
                   {data.discountedPrice ?? data.regularPrice} kr
-                  {data.type === 'rent' && '/ month'}
+                  {data.type === "rent" && "/ month"}
                 </p>
               </div>
             </SwiperSlide>
@@ -76,7 +74,7 @@ function HomeSlider() {
         </Swiper>
       </>
     )
-  )
+  );
 }
 
-export default HomeSlider
+export default HomeSlider;
